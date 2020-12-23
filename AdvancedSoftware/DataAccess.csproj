@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>AdvancedSoftware.DataAccess</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Nullable>enable</Nullable>
+    <PackageId>AdvancedSoftware.DataAccess</PackageId>
+    <Authors>Amr Swalha</Authors>
+    <Company>Advanced Software</Company>
+    <Description>The package for Advanced Software DataAccess to help facilitate the data access using EF Core 5</Description>
+    <PackageProjectUrl>https://github.com/advancedsoftwareofficial/packages</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/advancedsoftwareofficial/packages</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
+  </ItemGroup>
+
+</Project>
