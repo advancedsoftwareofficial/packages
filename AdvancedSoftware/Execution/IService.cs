@@ -9,6 +9,7 @@ namespace AdvancedSoftware.DataAccess.Execution
 {
     public partial interface IService<T> where T : class
     {
+        
         Task<T> AddAsync(T item);
         Task<List<T>> AddAsync(List<T> items);
         T Add(T item);

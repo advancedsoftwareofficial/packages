@@ -13,21 +13,21 @@ namespace AdvancedSoftware.DataAccess.Execution
 {
     public partial class ServiceBase<TEntity, TDbContext> : IService<TEntity> where TEntity : class, IEntityBase where TDbContext : DbContext
     {
-        protected readonly AppDbContext<TDbContext> _dbContext;
+        public readonly AppDbContext<TDbContext> DbContext;
         public ServiceBase(AppDbContext<TDbContext> dbContext)
         {
-            _dbContext = dbContext;
-            _dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
-            _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            _dbContext.ChangeTracker.LazyLoadingEnabled = false;
+            DbContext = dbContext;
+            DbContext.ChangeTracker.AutoDetectChangesEnabled = false;
+            DbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            DbContext.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public virtual async Task<TEntity> AddAsync(TEntity item)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _dbContext.AddAsync(item);
-                await _dbContext.SaveChangesAsync();
+                await DbContext.AddAsync(item);
+                await DbContext.SaveChangesAsync();
                 scope.Complete();
             }
             return item;
@@ -37,8 +37,8 @@ namespace AdvancedSoftware.DataAccess.Execution
             try
             {
                 using var scope = new TransactionScope();
-                _dbContext.Add(item);
-                _dbContext.SaveChanges();
+                DbContext.Add(item);
+                DbContext.SaveChanges();
                 scope.Complete();
             }
             catch (Exception e)
@@ -54,8 +54,8 @@ namespace AdvancedSoftware.DataAccess.Execution
             {
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    await _dbContext.AddRangeAsync(items);
-                    await _dbContext.SaveChangesAsync();
+                    await DbContext.AddRangeAsync(items);
+                    await DbContext.SaveChangesAsync();
                     scope.Complete();
                 }
             }
@@ -72,8 +72,8 @@ namespace AdvancedSoftware.DataAccess.Execution
             {
                 using (var scope = new TransactionScope())
                 {
-                    _dbContext.AddRange(items);
-                    _dbContext.SaveChanges();
+                    DbContext.AddRange(items);
+                    DbContext.SaveChanges();
                     scope.Complete();
                 }
             }
@@ -88,8 +88,8 @@ namespace AdvancedSoftware.DataAccess.Execution
         {
             using (var scope = new TransactionScope())
             {
-                _dbContext.Remove(Get(id));
-                _dbContext.SaveChanges();
+                DbContext.Remove(Get(id));
+                DbContext.SaveChanges();
                 scope.Complete();
             }
         }
@@ -99,8 +99,8 @@ namespace AdvancedSoftware.DataAccess.Execution
             {
                 if (entity != null)
                 {
-                    _dbContext.Update(entity);
-                    _dbContext.SaveChanges();
+                    DbContext.Update(entity);
+                    DbContext.SaveChanges();
                 }
                 scope.Complete();
             }
@@ -108,62 +108,62 @@ namespace AdvancedSoftware.DataAccess.Execution
 
         public void Delete(Expression<Func<TEntity, bool>> expression)
         {
-            var entity = _dbContext.Set<TEntity>().FirstOrDefault(expression);
+            var entity = DbContext.Set<TEntity>().FirstOrDefault(expression);
             if (entity != null)
             {
-                _dbContext.Update(entity);
+                DbContext.Update(entity);
             }
         }
 
         public virtual async Task<TEntity> GetAsync(int id)
         {
-            return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+            return await DbContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
         }
         public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
         {
-            return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(expression);
+            return await DbContext.Set<TEntity>().FirstOrDefaultAsync(expression);
         }
         public virtual TEntity Get(int id)
         {
-            return _dbContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+            return DbContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
         }
         public virtual TEntity Get(Expression<Func<TEntity, bool>> expression)
         {
-            return _dbContext.Set<TEntity>().FirstOrDefault(expression);
+            return DbContext.Set<TEntity>().FirstOrDefault(expression);
         }
         public virtual List<TEntity> GetList(Expression<Func<TEntity, bool>> expression)
         {
-            return _dbContext.Set<TEntity>().Where(expression).ToList();
+            return DbContext.Set<TEntity>().Where(expression).ToList();
         }
         public virtual async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression)
         {
-            return await _dbContext.Set<TEntity>().Where(expression).ToListAsync();
+            return await DbContext.Set<TEntity>().Where(expression).ToListAsync();
         }
         public IQueryable<TEntity> GetPagedQueryable(int page, int pageSize, Expression<Func<TEntity, bool>> expression)
         {
-            return _dbContext.Set<TEntity>().Skip((page - 1) * pageSize).Take(pageSize)
+            return DbContext.Set<TEntity>().Skip((page - 1) * pageSize).Take(pageSize)
                 .Where(expression);
         }
 
         public virtual IQueryable<TEntity> GetQueryable(Expression<Func<TEntity, bool>> expression)
         {
-            return _dbContext.Set<TEntity>().Where(expression);
+            return DbContext.Set<TEntity>().Where(expression);
         }
         public virtual async Task<bool> QueryAsync(Expression<Func<TEntity, bool>> expression)
         {
-            return await _dbContext.Set<TEntity>().AnyAsync(expression);
+            return await DbContext.Set<TEntity>().AnyAsync(expression);
         }
         public virtual bool Query(Expression<Func<TEntity, bool>> expression)
         {
-            return _dbContext.Set<TEntity>().Any(expression);
+            return DbContext.Set<TEntity>().Any(expression);
         }
 
         public virtual TEntity Update(TEntity item)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                _dbContext.Set<TEntity>().Update(item);
-                _dbContext.SaveChanges();
+                DbContext.Set<TEntity>().Update(item);
+                DbContext.SaveChanges();
                 scope.Complete();
             }
             return item;
@@ -172,8 +172,8 @@ namespace AdvancedSoftware.DataAccess.Execution
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                _dbContext.Set<TEntity>().UpdateRange(items);
-                _dbContext.SaveChanges();
+                DbContext.Set<TEntity>().UpdateRange(items);
+                DbContext.SaveChanges();
                 scope.Complete();
             }
             return items;
@@ -181,29 +181,29 @@ namespace AdvancedSoftware.DataAccess.Execution
 
         public virtual int? Count(Expression<Func<TEntity, bool>> expression)
         {
-            var count = _dbContext.Set<TEntity>().Count(expression);
+            var count = DbContext.Set<TEntity>().Count(expression);
             return count;
         }
         public virtual DbSet<TEntity> AsDbSet()
         {
-            return _dbContext.Set<TEntity>();
+            return DbContext.Set<TEntity>();
         }
         public virtual IQueryable<TEntity> AsQueryable()
         {
-            return _dbContext.Set<TEntity>().AsQueryable();
+            return DbContext.Set<TEntity>().AsQueryable();
         }
         public virtual IEnumerable<TEntity> AsEnumerable()
         {
-            return _dbContext.Set<TEntity>().AsEnumerable();
+            return DbContext.Set<TEntity>().AsEnumerable();
         }
 
         public virtual void SaveChanges()
         {
-            _dbContext.SaveChanges();
+            DbContext.SaveChanges();
         }
         public virtual async Task SaveChangesAsync()
         {
-            await _dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
         }
     }
 }
